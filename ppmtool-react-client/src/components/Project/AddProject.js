@@ -1,4 +1,9 @@
 import React, { Component } from 'react'
+import PropTypes from "prop-types"
+import { connect } from 'react-redux'
+import {createProject} from "../../actions/projectActions"
+import { useNavigate } from 'react-router-dom';
+
 
 class AddProject extends Component {
     constructor(){
@@ -17,7 +22,6 @@ class AddProject extends Component {
     onChange(e){
         this.setState({
             [e.target.name]: e.target.value
-            
         })
     }
 
@@ -30,9 +34,10 @@ class AddProject extends Component {
             start_date: this.state.start_date,
             end_date: this.state.end_date
         }
-        
-        console.log(newProject)
+        this.props.createProject(newProject, this.props.navigate)
     }
+
+    
 
     render() {
         return (
@@ -98,4 +103,17 @@ class AddProject extends Component {
     }
 }
 
-export default AddProject;
+AddProject.propTypes = {
+    createProject : PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired
+}
+
+const AddProjectWithNavigate = (props) => {
+    const navigate = useNavigate();
+    return <AddProject {...props} navigate={navigate} />;
+}
+
+export default connect(
+    null,
+    {createProject})
+     (AddProjectWithNavigate);
