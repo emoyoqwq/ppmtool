@@ -1,6 +1,18 @@
 import React, { Component } from 'react'
+import { getProject } from '../../actions/projectActions'
+import PropTypes from "prop-types"
+import {connect} from "react-redux"
+import classnames from "classnames"
+import { useParams } from 'react-router-dom'
+
+
 
 class UpdateProject extends Component {
+
+    componentDidMount(){
+        const {id} = this.props.params
+        this.props.getProject(id, this.props.history)
+    }
   render() {
     return (
         <div className="project">
@@ -39,4 +51,23 @@ class UpdateProject extends Component {
   }
 }
 
-export default UpdateProject;
+export const withRouter = (Component) => {
+    function ComponentWithRouterProp(props) {
+      const params = useParams();
+      return <Component {...props} params={params} />;
+    }
+    return ComponentWithRouterProp;
+};
+
+UpdateProject.propTypes = {
+    getProject: PropTypes.func.isRequired,
+    project: PropTypes.object.isRequired
+}
+
+
+const mapStateToProps = state => ({
+    project: state.project.project
+})
+
+
+export default connect(mapStateToProps,{getProject})(withRouter(UpdateProject));
